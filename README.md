@@ -1,5 +1,7 @@
 # Ninja 2 — in a browser
 
+**▶ [Watch it in your browser](https://gmegidish.github.io/ninja2/)** · press **F** for fullscreen
+
 *Ninja 2* is a demo by SCOOP and Melon, released for MS-DOS in the spring of 1996. Its `.NFO` calls it "50% animations and 50% code": a two-and-a-half-minute cartoon, drawn by hand in Deluxe Paint, played back by a 486.
 
 This repository rebuilds it in a browser. The picture is composed on the CPU the way the original did it: a 320×256 framebuffer of palette indices and a 6-bit VGA palette. A 2D canvas puts that framebuffer on screen. No WebGL, no libraries. Same graphics file, same music, same tick counts.
