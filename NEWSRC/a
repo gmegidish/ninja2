@@ -1,0 +1,9 @@
+main.c
+Microsoft (R) Incremental Linker Version 6.00.8168
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+
+/out:main.exe 
+/debug 
+main.obj 
+C:\NINJA2\SDL-12~1.1\LIB\sdl.lib 
+..\midas\midas.lib 
