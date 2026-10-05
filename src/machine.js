@@ -1,5 +1,5 @@
 // The "PC": the globals of the shipped NINJA2.EXE, plus its timer interrupt.
-// No DOM and no three.js in here, so the whole demo also runs under node.
+// No DOM in here, so the whole demo also runs under node.
 //
 // Timing comes from the executable, not from original_src/NINJAC.C (an earlier revision).
 // MIDAS calls an interrupt routine once per vertical retrace. That routine advances the current

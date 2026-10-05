@@ -17,6 +17,8 @@ Decisions made with the user:
 
 The timing model below was replaced. `NINJA2.EXE` was built from a later revision than `original_src/`: scene timing is driven by a per-retrace timer interrupt, and every scene was retimed. The port now takes its scene logic and tick constants from the executable's disassembly. See the Timing section of `README.md`.
 
+The three.js presenter was also replaced by a plain 2D canvas (`src/screen.js`).
+
 ## Source of truth
 
 | Source | Role |

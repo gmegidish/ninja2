@@ -1,8 +1,8 @@
-# Ninja 2 — WebGL
+# Ninja 2 — in a browser
 
 *Ninja 2* is a demo by SCOOP and Melon, released for MS-DOS in the spring of 1996. Its `.NFO` calls it "50% animations and 50% code": a two-and-a-half-minute cartoon, drawn by hand in Deluxe Paint, played back by a 486.
 
-This repository rebuilds it in a browser. The picture is composed on the CPU the way the original did it: a 320×256 framebuffer of palette indices and a 6-bit VGA palette. Three.js only puts that framebuffer on screen. Same graphics file, same music, same tick counts.
+This repository rebuilds it in a browser. The picture is composed on the CPU the way the original did it: a 320×256 framebuffer of palette indices and a 6-bit VGA palette. A 2D canvas puts that framebuffer on screen. No WebGL, no libraries. Same graphics file, same music, same tick counts.
 
 The port started from the demo's source code. The source turned out to be the wrong revision, so the timing was read out of `NINJA2.EXE` instead. That story is below.
 
@@ -359,15 +359,16 @@ Cross-correlated against the capture's soundtrack, the render drifts by 0.09 s o
 2. Port the scenes. Each blocking C routine becomes a JavaScript generator that yields at every retrace. The body stays comparable with the original, line for line.
 3. Run the timer interrupt at every yield.
 4. Drive the generator from the music's clock. Seeking replays it from zero: scenes are deterministic and cost about a second for the whole demo.
-5. Upload the framebuffer as an 8-bit texture and the palette as a 256×1 texture. One quad, one shader, nearest filtering.
+5. Turn the palette into 256 ready-made pixels, look every index up, and `putImageData` the result onto a canvas the size of the framebuffer. CSS scales it with `image-rendering: pixelated`.
 6. Compare against the capture, frame by frame, and fix the differences.
 
-```glsl
-float index = texture2D(indexTexture, uv).r * 255.0;
-gl_FragColor = texture2D(paletteTexture, vec2((index + 0.5) / 256.0, 0.5));
+```js
+for (let i = 0; i < front.length; i++) {
+  pixels[i] = colours[front[i]];
+}
 ```
 
-That fragment shader is all the WebGL there is.
+That loop is the whole renderer. An earlier version did the lookup in a WebGL shader; 81,920 pixels did not need a GPU.
 
 ```
 index.html            the demo page
@@ -376,7 +377,7 @@ src/ilbm.js           depack and palette
 src/gfx.js            layers, fog, sprite, zoom, blur
 src/scenes/           one generator per scene routine of NINJA2.EXE
 src/demo.js           main(): scene order, and the runner
-src/screen.js         three.js
+src/screen.js         the canvas
 assets/               NINJA2.000 untouched, music.ogg
 tools/poster.mjs      renders docs/poster.png
 test/                 node --test
@@ -402,4 +403,3 @@ node tools/poster.mjs    # renders the poster
 - [1] [Capture of the original](https://www.youtube.com/watch?v=W_krY1akm3s), the reference for every timing in this port
 - [2] [libopenmpt](https://lib.openmpt.org/libopenmpt/), which renders the module
 - [3] [NASM](https://www.nasm.us), whose `ndisasm` read the executable
-- [4] [three.js](https://threejs.org)

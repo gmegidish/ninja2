@@ -26,14 +26,18 @@ async function loadGraphics() {
   return new Uint8Array(await fetchBytes(GRAPHICS_URL));
 }
 
-/** The whole file goes into a blob, so seeking works on static hosts without HTTP range support. */
+/**
+ * The whole file goes into a blob, so seeking works on static hosts without HTTP range support.
+ * Nothing waits for the audio element here: browsers may not decode media in a tab until it is played.
+ */
 async function loadMusic() {
   const blob = new Blob([await fetchBytes(MUSIC_URL)], { type: 'audio/ogg' });
-  await new Promise((resolve, reject) => {
-    audio.addEventListener('loadedmetadata', resolve, { once: true });
-    audio.addEventListener('error', () => reject(new Error(`${MUSIC_URL}: cannot be played by this browser`)), { once: true });
-    audio.src = URL.createObjectURL(blob);
-  });
+  audio.src = URL.createObjectURL(blob);
+}
+
+/** Length of the music in seconds. Unknown until the browser has read the file's header. */
+function musicLength() {
+  return Number.isFinite(audio.duration) ? audio.duration : Infinity;
 }
 
 /**
@@ -70,8 +74,8 @@ function reportPlaybackError(error) {
 function startMusic(timeMs, musicStartMs) {
   isMusicStarted = true;
   const offset = (timeMs - musicStartMs) / 1000 / SPEED;
-  const isFirstPass = offset < audio.duration;
-  audio.currentTime = offset % audio.duration;
+  const isFirstPass = offset < musicLength();
+  audio.currentTime = isFirstPass ? offset : offset % musicLength();
   audio.play().then(() => {
     if (isFirstPass) {
       clock.musicStartMs = musicStartMs;
