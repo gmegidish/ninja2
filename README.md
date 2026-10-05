@@ -175,7 +175,7 @@ Times are from the first note of the music.
 
 ## The source that did not ship
 
-I had the source. `NINJAC.C`, `NINJA.A`, the makefile, even an unfinished SDL port. So I ported the source.
+I had the source. `NINJAC.C`, `NINJA.A`, the makefile. So I ported the source.
 
 Its timing is one function:
 
@@ -384,7 +384,6 @@ assets/               NINJA2.000 untouched, music.ogg
 tools/poster.mjs      renders docs/poster.png
 test/                 node --test
 original_src/         the DOS source: an earlier revision than the executable
-NEWSRC/               an unfinished SDL port of that source
 ```
 
 Nothing in `src/` except `screen.js` and `main.js` touches the DOM, so the whole demo runs under node:
